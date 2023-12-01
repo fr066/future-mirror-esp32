@@ -40,15 +40,22 @@ void setup() {
   servos[1].attach(1,90);
   servos[2].attach(2,90);
   // настраиваем макс. скорость
-  servos[0].setSpeed(90);
-  servos[1].setSpeed(90);
-  servos[2].setSpeed(90);
+  servos[0].setSpeed(60);
+  servos[1].setSpeed(60);
+  servos[2].setSpeed(60);
+  // ускорение
+  servos[0].setAccel(0.5);
+  servos[1].setAccel(0.5);
+  servos[2].setAccel(0.5);
+  servos[0].smoothStart();  
+  servos[1].smoothStart();  
+  servos[2].smoothStart();  
   Serial.println("setup complete");
 
 }
 
 void upAngle(int angle) {
-  if ( angle > 0) {
+  if ( angle > 0 ) {
 positionm1 = 90 + angle ;
   } else {
     positionm1 = 90 - angle ;
@@ -66,6 +73,8 @@ void rAngle(int angle) {
     positionm2 = 90 - angle;
     positionm3 = 90 + angle;
 }
+
+
 void loop() {
 
   if (Serial.available() > 0) {  //если есть доступные данные
