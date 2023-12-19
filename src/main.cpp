@@ -1,15 +1,8 @@
 #include <Arduino.h>
 /*
-   Данный код плавно управляет одной сервой   
-   при помощи потенциометра (на пине А0).
-   Используется драйвер PCA9685
-   Откройте порт по последовательному соединению для наблюдения за положением серво
-   Документация: https://alexgyver.ru/servosmooth/
+    ESP32 servo contoroller for mirror mover 
 */
-/*
-  Данный скетч крутит 4 сервопривода с разными скоростями и ускорениями
-  Документация: https://alexgyver.ru/servosmooth/
- */
+
 #define AMOUNT 3  // кол-во серво
 #include <ServoSmooth.h>
 #include <ServoDriverSmooth.h>
@@ -80,11 +73,16 @@ void setup() {
   servos[0].smoothStart();  
   servos[1].smoothStart();  
   servos[2].smoothStart();  
-  Serial.println("setup complete");
+  Serial.println("Servo setup complete");
+  Serial.println("Sets to middle position");
 
-Serial.print("Connecting to network ");
+/*
+  Serial.print("Connecting to network ");
   Serial.println(ssid);
+
+  
   WiFi.begin(ssid, password);
+  
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -95,30 +93,26 @@ Serial.print("Connecting to network ");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
   server.begin();
+  */
 }
 
-void upAngle(int angle) {
-  if ( angle > 0 ) {
-positionm1 = 90 + angle ;
-  } else {
-    positionm1 = 90 - angle ;
-  }
+  void upAngle(int angle) {
+
+    positionm1 += angle ;
     
-    //positionm2 = 90 - angle;
-    //positionm3 = 90 - angle;
-    
-}
+ }
 
 
 
 void rAngle(int angle) {
  
-    positionm2 = 90 - angle;
-    positionm3 = 90 + angle;
+    positionm2 -= angle;
+    positionm3 += angle;
 }
 
 
 void loop() {
+  /*
  WiFiClient client = server.available();   // Listen for incoming clients
 
   if (client) {                             // If a new client connects,
@@ -201,7 +195,7 @@ void loop() {
     Serial.println("Client disconnected.");
     Serial.println("");
   }
-
+*/
 
   if (Serial.available() > 0) {  //если есть доступные данные
         // считываем байт
@@ -259,14 +253,14 @@ void loop() {
   if ( cmd == "hi" ) {
     autoturn = false;
     Serial.println(" set high position " );
-    positionm1 = positionm2 = positionm3 = 20;
+    positionm1 = positionm2 = positionm3 = 45;
     manual = true;
   }
 
   if ( cmd == "low" ) {
     autoturn = false;
     Serial.println(" set low position " );
-    positionm1 = positionm2 = positionm3 = 150;
+    positionm1 = positionm2 = positionm3 = 128;
     manual = true;
   }
   if ( cmd == "auto") {
@@ -327,18 +321,18 @@ void loop() {
  if (millis() - turnTimer >= 1000) {
     
     
-    if ( cAngle >= 26 ) {
+    if ( cAngle >= 16 ) {
       reverse = true;
     } 
-    if ( cAngle <= -26 ) {
+    if ( cAngle <= -16 ) {
       reverse = false;
     }
    if (reverse ) {
-    cAngle -= 3;
+    cAngle -= 2;
    } else {
-    cAngle += 3;
+    cAngle += 2;
    }
-   rAngle(cAngle);
+   //rAngle(cAngle);
    upAngle(cAngle);
    manual = true;
    turnTimer = millis();
